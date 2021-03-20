@@ -1,0 +1,8 @@
+<div class="go-to" fxLayout="row">
+    <div class="go-to__buttons"  >
+        <button mat-stroked-button (click)="resetCamera()">SUN</button>
+    </div>
+    <div class="go-to__buttons"  *ngFor="let p of listOfPlanets">
+        <button mat-stroked-button (click)="goTo(p)">{{p.name}}</button>
+    </div>
+</div>
