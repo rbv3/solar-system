@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { PLANETS } from '../../assets/textures';// controls
 import { SUN } from '../../assets/textures';// controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import * as STATS from 'stats.js';
 
 @Component({
   selector: 'app-main',
@@ -176,14 +177,34 @@ export class MainComponent implements OnInit {
     this.camera.position.set(0, 0, 100);
     this.camera.lookAt(0, 0, 0);
   }
+  setupStats() {
+    console.log(STATS)
+    var stats = new STATS();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    console.log(stats.dom)
+    stats.dom.style = "position: fixed; top: 0px;  cursor: pointer; opacity: 0.9; z-index: 10000; right: 0px";
+    document.body.appendChild(stats.dom);
+
+    function animate() {
+
+      stats.begin();
+
+      // monitored code goes here
+
+      stats.end();
+
+      requestAnimationFrame(animate);
+
+    }
+
+    requestAnimationFrame(animate);
+  }
   ngOnInit(): void {
     this.setup();
-    // this.addPlanet();
-    // const sphere = this.createSphere();
     this.addSun();
     this.addPlanets();
     this.setupListOfPlanets();
-    // this.animate(sphere);
+    this.setupStats();
   }
 
 }
