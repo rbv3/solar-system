@@ -203,7 +203,7 @@ export class MainComponent implements OnInit {
   setupStats() {
     var stats = new STATS();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    stats.dom.style = "position: fixed; top: 0px;  cursor: pointer; opacity: 0.9; z-index: 10000; right: 0px";
+    stats.dom.style = "position: fixed; bottom: 0px;  cursor: pointer; opacity: 0.9; z-index: 10000; right: 0px";
     document.body.appendChild(stats.dom);
 
     function animate() {
