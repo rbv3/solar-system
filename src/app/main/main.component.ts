@@ -180,11 +180,15 @@ export class MainComponent implements OnInit {
     )
 
     this.controls.update();
-    console.log(this.camera)
   }
   resetCamera() {
     this.camera.position.set(0, 0, 100);
-    this.camera.lookAt(0, 0, 0);
+    this.controls.target.set(
+      0,
+      0,
+      0
+    )
+    this.controls.update();
   }
   setupStats() {
     console.log(STATS)
