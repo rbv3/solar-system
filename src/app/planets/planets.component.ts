@@ -25,7 +25,7 @@ export class PlanetsComponent {
   }
   daysToSpeed(days) {
     const max = 1;
-    return (max*days)/243;
+    return (max*(1/days))/5; //tbh, i just tested some values here until I liked the rotation of the planets
   }
   distanceCamera(maxDistance) {
     return maxDistance*2;

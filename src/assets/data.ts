@@ -2,7 +2,7 @@ export const SUN = {
     url: "assets/images/sun.jpg",
     radius: 696340,
     distanceFromSun: 0,
-    rotation: 0.4,
+    rotation: 100,
 
 };
 export const PLANETS = {
