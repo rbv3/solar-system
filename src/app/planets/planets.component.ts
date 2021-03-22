@@ -42,4 +42,12 @@ export class PlanetsComponent {
     const max = 40; //sun
     return (max*length)/maxRadius;
   }
+
+  saturnRing(x, innerRadius, outerRadius) {
+    const material = this.loadTexture("assets/images/saturn_ring_alpha.png");
+    const geometry = new THREE.RingGeometry( innerRadius, outerRadius, 30 );
+    const mesh = new THREE.Mesh( geometry, material );
+    mesh.position.set(0, 0, 0);
+    return mesh;
+  }
 }

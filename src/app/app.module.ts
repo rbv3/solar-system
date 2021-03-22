@@ -15,7 +15,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AppComponent,
     MainComponent,
     SunComponent,
-    PlanetsComponent
+    PlanetsComponent,
   ],
   imports: [
     BrowserModule,

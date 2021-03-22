@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PlanetsComponent } from "../planets/planets.component";
 import * as THREE from 'three';
-import { PLANETS } from '../../assets/textures';// controls
-import { SUN } from '../../assets/textures';// controls
+import { PLANETS } from '../../assets/data';// controls
+import { SUN } from '../../assets/data';// controls
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import * as STATS from 'stats.js';
 
@@ -37,10 +37,6 @@ export class MainComponent implements OnInit {
     //lights
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); //color n intensity
     this.scene.add(ambientLight);
-
-    const dirLight = new THREE.DirectionalLight(0xffffff, 0.6); //color n intensity
-    dirLight.position.set(10, 20, 0); // x, y, z //from 10,20,0 to 0,0,0
-    this.scene.add(dirLight);
 
     //camera
     const width = 10;
@@ -146,6 +142,19 @@ export class MainComponent implements OnInit {
         this.planetsComponent.daysToSpeed(PLANETS[planet].rotation));
     }
   }
+  addSaturnRing() {
+    const ring = this.planetsComponent.saturnRing(
+      this.planetsComponent.lengthAmortizer(
+        SUN.radius,
+        SUN.radius + PLANETS['SATURN'].distanceFromSun / 100
+      ),
+      PLANETS['SATURN'].radius*1.1,
+      PLANETS['SATURN'].radius*1.5
+    )
+    console.log(ring);
+    this.scene.add(ring);
+    console.log(this.scene)
+  }
   setupListOfPlanets() {
     for (let planet in PLANETS) {
       this.listOfPlanets.push({
@@ -202,6 +211,7 @@ export class MainComponent implements OnInit {
   ngOnInit(): void {
     this.setup();
     this.addSun();
+    this.addSaturnRing();
     this.addPlanets();
     this.setupListOfPlanets();
     this.setupStats();
