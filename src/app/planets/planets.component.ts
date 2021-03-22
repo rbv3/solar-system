@@ -17,7 +17,7 @@ export class PlanetsComponent {
     return material;
   }
   createSphere(x, radius, url) {
-    const geometry = new THREE.SphereGeometry(radius, 32, 32);
+    const geometry = new THREE.SphereBufferGeometry(radius, 32, 32);
     const material = this.loadTexture(url);
     const sphere = new THREE.Mesh(geometry, material);
     sphere.position.set(x, 0, 0);
@@ -45,7 +45,7 @@ export class PlanetsComponent {
 
   saturnRing(x, innerRadius, outerRadius) {
     const material = this.loadTexture("assets/images/saturn_ring_alpha.png");
-    const geometry = new THREE.RingGeometry( innerRadius, outerRadius, 30 );
+    const geometry = new THREE.RingBufferGeometry( innerRadius, outerRadius, 30 );
     const mesh = new THREE.Mesh( geometry, material );
     mesh.position.set(0, 0, 0);
     return mesh;

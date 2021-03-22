@@ -24,13 +24,12 @@ export class MainComponent implements OnInit {
   renderer: any;
   controls: any;
   listOfPlanets = [];
+  planetObjects = [];
 
   setup() {
     if (localStorage.getItem('high-score') == null) {
       localStorage.setItem('high-score', "0");
     }
-
-
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0x000000);
 
@@ -41,13 +40,21 @@ export class MainComponent implements OnInit {
     //camera
     const width = 10;
     const height = width * (window.innerHeight / window.innerWidth);
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
 
     this.camera.position.set(0, 0, 100);
     // this.camera.lookAt(0, 0, 0);
 
     //renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    let pixelRatio = window.devicePixelRatio
+    let AA = true
+    if (pixelRatio > 1) {
+      AA = false
+    }
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: AA,
+      powerPreference: "high-performance"
+    });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.render(this.scene, this.camera);
 
@@ -71,14 +78,14 @@ export class MainComponent implements OnInit {
     this.controls.zoomSpeed = 2;
 
     this.controls.update();
-    console.log(this.camera)
     // Add it to HTML
     document.body.appendChild(this.renderer.domElement);
   }
-  animate(sphere, speed) {
-    requestAnimationFrame(() => this.animate(sphere, speed));
-
-    sphere.rotation.y += speed;
+  animate() {
+    requestAnimationFrame(() => this.animate());
+    for(let p in this.planetObjects) {
+      this.planetObjects[p].planet.rotation.y += this.planetObjects[p].speed;      
+    }
 
     this.renderer.render(this.scene, this.camera);
   };
@@ -96,10 +103,10 @@ export class MainComponent implements OnInit {
     );
     this.addSunLight();
     this.scene.add(element);
-    this.animate(
-      element,
-      this.planetsComponent.daysToSpeed(SUN.rotation));
-
+    return {
+      planet: element,
+      speed: this.planetsComponent.daysToSpeed(SUN.rotation)
+    };
   }
   addSunLight() {
 
@@ -123,7 +130,8 @@ export class MainComponent implements OnInit {
     // const helper = new THREE.CameraHelper( light.shadow.camera );
     // this.scene.add( helper );
   }
-  addPlanets() {
+  addPlanets(callback) {
+    this.planetObjects.push(this.addSun());
     for (let planet in PLANETS) {
       const element = this.planetsComponent.createSphere(
         this.planetsComponent.lengthAmortizer(
@@ -137,10 +145,12 @@ export class MainComponent implements OnInit {
         PLANETS[planet].url
       );
       this.scene.add(element);
-      this.animate(
-        element,
-        this.planetsComponent.daysToSpeed(PLANETS[planet].rotation));
+      this.planetObjects.push({
+        planet: element,
+        speed: this.planetsComponent.daysToSpeed(PLANETS[planet].rotation)
+      })
     }
+    callback();
   }
   addSaturnRing() {
     const ring = this.planetsComponent.saturnRing(
@@ -148,8 +158,8 @@ export class MainComponent implements OnInit {
         SUN.radius,
         SUN.radius + PLANETS['SATURN'].distanceFromSun / 100
       ),
-      PLANETS['SATURN'].radius*1.1,
-      PLANETS['SATURN'].radius*1.5
+      PLANETS['SATURN'].radius * 1.1,
+      PLANETS['SATURN'].radius * 1.5
     )
     console.log(ring);
     this.scene.add(ring);
@@ -191,10 +201,8 @@ export class MainComponent implements OnInit {
     this.controls.update();
   }
   setupStats() {
-    console.log(STATS)
     var stats = new STATS();
     stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-    console.log(stats.dom)
     stats.dom.style = "position: fixed; top: 0px;  cursor: pointer; opacity: 0.9; z-index: 10000; right: 0px";
     document.body.appendChild(stats.dom);
 
@@ -214,9 +222,10 @@ export class MainComponent implements OnInit {
   }
   ngOnInit(): void {
     this.setup();
-    this.addSun();
-    this.addSaturnRing();
-    this.addPlanets();
+    // this.addSun();
+    // this.addSaturnRing();
+    this.addPlanets(()=>this.animate());
+    
     this.setupListOfPlanets();
     this.setupStats();
   }
