@@ -222,7 +222,6 @@ export class MainComponent implements OnInit {
   }
   ngOnInit(): void {
     this.setup();
-    // this.addSun();
     // this.addSaturnRing();
     this.addPlanets(()=>this.animate());
     
