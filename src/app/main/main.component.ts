@@ -38,8 +38,6 @@ export class MainComponent implements OnInit {
     this.scene.add(ambientLight);
 
     //camera
-    const width = 10;
-    const height = width * (window.innerHeight / window.innerWidth);
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 500);
 
     this.camera.position.set(0, 0, 100);
@@ -114,12 +112,17 @@ export class MainComponent implements OnInit {
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
 
 
-    const light = new THREE.PointLight(0xeb9234, 3, 0, 2);
+    const light = new THREE.PointLight(0xeb9234, 3, 
+      this.planetsComponent.lengthAmortizer(
+        SUN.radius,
+        1.5*(SUN.radius + PLANETS['PLUTO'].distanceFromSun / 100)
+      ), 1);
     light.position.set(0, 0, 0);
     // light.castShadow = true; // default false
 
     this.scene.add(light);
-
+    console.log(this.scene);
+    
 
     // light.shadow.mapSize.width = SUN.radius; // default
     // light.shadow.mapSize.height = SUN.radius; // default
@@ -145,10 +148,16 @@ export class MainComponent implements OnInit {
         PLANETS[planet].url
       );
       this.scene.add(element);
+      
+      // this.scene.add(new THREE.BoxHelper(element))
+      
       this.planetObjects.push({
         planet: element,
         speed: this.planetsComponent.daysToSpeed(PLANETS[planet].rotation)
       })
+      if(planet == 'SATURN') {
+        this.addSaturnRing();
+      }
     }
     callback();
   }
@@ -158,12 +167,19 @@ export class MainComponent implements OnInit {
         SUN.radius,
         SUN.radius + PLANETS['SATURN'].distanceFromSun / 100
       ),
-      PLANETS['SATURN'].radius * 1.1,
-      PLANETS['SATURN'].radius * 1.5
+      this.planetsComponent.lengthAmortizer(
+        SUN.radius,
+        PLANETS['SATURN'].radius * 1.1
+      ),
+      this.planetsComponent.lengthAmortizer(
+        SUN.radius,
+        PLANETS['SATURN'].radius * 1.6
+      ),
     )
-    console.log(ring);
+    // const box = new THREE.BoxHelper( ring, 0xffff00 );
+    // box.position.set(ring.position.x, ring.position.y, ring.position.z);
     this.scene.add(ring);
-    console.log(this.scene)
+    // this.scene.add(box);
   }
   setupListOfPlanets() {
     for (let planet in PLANETS) {
@@ -222,11 +238,10 @@ export class MainComponent implements OnInit {
   }
   ngOnInit(): void {
     this.setup();
-    // this.addSun();
-    // this.addSaturnRing();
-    this.addPlanets(()=>this.animate());
     
     this.setupListOfPlanets();
+    this.addPlanets(()=>this.animate());
+    
     this.setupStats();
   }
 
