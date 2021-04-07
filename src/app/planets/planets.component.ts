@@ -45,9 +45,17 @@ export class PlanetsComponent {
 
   saturnRing(x, innerRadius, outerRadius) {
     const material = this.loadTexture("assets/images/saturn_ring_alpha.png");
+    material.side = THREE.DoubleSide;
     const geometry = new THREE.RingBufferGeometry( innerRadius, outerRadius, 30 );
+    var pos = geometry.attributes.position;
+    var v3 = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++){
+        v3.fromBufferAttribute(pos, i);
+        geometry.attributes.uv.setXY(i, v3.length() < 4 ? 0 : 1, 1);
+    }
     const mesh = new THREE.Mesh( geometry, material );
-    mesh.position.set(0, 0, 0);
+    mesh.position.set(x, 0, 0);
+    mesh.rotation.x = (Math.PI+0.4) / 2;
     return mesh;
   }
 }
